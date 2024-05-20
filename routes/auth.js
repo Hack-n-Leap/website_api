@@ -40,10 +40,14 @@ router.post("/signup", async (req, res) => {
     res.json({message: "User created !"});
 });
 
+router.get("/isConnnected", async (req, res) => {
+    res.json({connected: Boolean(req.session.user)})
+})
+
 router.post("/logout", isAuthentificated, async (req, res) => {
     req.session.user = null;
 
-    res.json({message: "Deconnected !"});
+    res.json({message: "Disconnected !"});
 })
 
 module.exports = router;
