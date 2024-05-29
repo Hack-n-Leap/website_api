@@ -12,9 +12,14 @@ const userRoute = require("./routes/users")
 const app = express();
 const port = config.port;
 
+const corsOption = {
+    origin: "http://localhost:3000",
+    credentials: true
+}
+
+app.use(cors(corsOption));
 app.use(bodyParser.json());
 app.use(sessionMiddleware);
-app.use(cors());
 
 app.use("/api/auth", authRoute);
 app.use("/api/leaderboard", leaderboardRoute);
