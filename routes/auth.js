@@ -13,17 +13,17 @@ router.post("/login", async (req, res) => {
 
     if (!user) {
         res.status(404).json({message: "User not found !"});
+    } else {
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            res.status(401).json({message: "Invalid password !"});
+        }
+    
+        req.session.user = { pseudo: pseudo }
+    
+        res.json({message: "Authentificated !"});
     }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-        res.status(401).json({message: "Invalid password !"});
-    }
-
-    req.session.user = { pseudo: pseudo }
-
-    res.json({message: "Authentificated !"})
 });
 
 router.post("/signup", async (req, res) => {
@@ -40,10 +40,19 @@ router.post("/signup", async (req, res) => {
     res.json({message: "User created !"});
 });
 
+router.get("/isConnnected", async (req, res) => {
+    res.json({connected: Boolean(req.session.user)})
+})
+
+router.get("/getConnection", async (req, res) => {
+    req.session.user = {pseudo: "admin"};
+    res.json({message: "Authentificated"});
+});
+
 router.post("/logout", isAuthentificated, async (req, res) => {
     req.session.user = null;
 
-    res.json({message: "Deconnected !"});
+    res.json({message: "Disconnected !"});
 })
 
 module.exports = router;
